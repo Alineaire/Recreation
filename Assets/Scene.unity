@@ -145,7 +145,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.000015258789, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &326366309
@@ -219,7 +219,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.000030517578, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &362732901
@@ -381,7 +381,7 @@ MonoBehaviour:
   m_Script: {fileID: -765806418, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
   m_OnCullStateChanged:
@@ -436,7 +436,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.000015258789, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &879353068
@@ -498,7 +498,6 @@ GameObject:
   - component: {fileID: 979419845}
   - component: {fileID: 979419846}
   - component: {fileID: 979419847}
-  - component: {fileID: 979419848}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -608,15 +607,15 @@ MonoBehaviour:
   arduinoCommunication: {fileID: 979419847}
   minCounter: 1
   maxCounter: 5
-  challengeDuration: 15
+  challengeDuration: 150
   messageDuration: 2.5
   webcamDuration: 5
   gifDuration: 10
   gifFrameDuration: 0.25
-  buttonColors:
-  - {r: 1, g: 0, b: 0, a: 0}
-  - {r: 0, g: 1, b: 0, a: 0}
-  - {r: 0, g: 0, b: 1, a: 0}
+  hueOffsets:
+  - 0
+  - 0.3
+  - 0.6
 --- !u!114 &979419846
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -644,27 +643,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8095fb0dac140a64cbf1fd4b3fc8c6ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  comPort: 6
   speed: 9600
-  pinRangeMin: 02000000070000000c000000
-  pinRangeMax: 060000000b00000011000000
-  bufferCount: 128
---- !u!114 &979419848
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 979419840}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c47429904d04a0c428f0c955559f6c7f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  width: 1920
-  height: 1080
-  fps: 5
-  quality: 90
-  savePath: webcam
+  intensity: 64
 --- !u!1 &1560238403
 GameObject:
   m_ObjectHideFlags: 0

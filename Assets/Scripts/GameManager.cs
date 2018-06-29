@@ -4,6 +4,11 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
+    class Button
+    {
+        public int hueOffsetIndex;
+    }
+
     public Image backgroundImage;
     public Image webcamImage;
     public Text counterText;
@@ -22,7 +27,8 @@ public class GameManager : MonoBehaviour
     public float gifDuration = 10.0f;
     public float gifFrameDuration = 0.5f;
 
-    public List<Color> buttonColors = new List<Color>();
+    public float[] hueOffsets;
+    private Button[] buttons = new Button[15];
 
     enum State
     {
@@ -35,14 +41,11 @@ public class GameManager : MonoBehaviour
 
     State state;
 
-    int buttonColor;
+    float mainHue;
     int buttonCount;
     int counter;
     int spaceCounter;
     float timer;
-    HashSet<int> pressedButtons = new HashSet<int>();
-
-    NumberGenerator buttonColorGenerator;
 
     List<Sprite> webcamSprites = new List<Sprite>();
     float gifTimer;
@@ -50,7 +53,16 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        buttonColorGenerator = new NumberGenerator(0, buttonColors.Count);
+        for (int i = 0; i < 3; ++i)
+        {
+            for (int j = 0; j < 5; ++j)
+            {
+                buttons[i * 5 + j] = new Button()
+                {
+                    hueOffsetIndex = i,
+                };
+            }
+        }
 
         backgroundImage.material.SetFloat("_AspectRatio", Screen.width / Screen.height);
 
@@ -61,6 +73,19 @@ public class GameManager : MonoBehaviour
     void SetAngle(float ratio)
     {
         backgroundImage.material.SetFloat("_Angle", Mathf.PI * (1 - 2 * ratio));
+    }
+
+    int GetButtonCount()
+    {
+        int sum = 0;
+        for (int i = 0; i < 15; ++i)
+        {
+            if (buttons[i].hueOffsetIndex == 0 && arduinoCommunication.IsButtonPressed(i))
+            {
+                ++sum;
+            }
+        }
+        return sum;
     }
 
     void Update()
@@ -81,7 +106,7 @@ public class GameManager : MonoBehaviour
                         ++spaceCounter;
                     }
 
-                    counter = buttonCount - spaceCounter - arduinoCommunication.GetButtonCount(buttonColor);
+                    counter = buttonCount - spaceCounter - GetButtonCount();
                     UpdateCounterText();
 
                     if (counter <= 0)
@@ -147,7 +172,16 @@ public class GameManager : MonoBehaviour
     {
         state = State.Challenge;
 
-        buttonColor = buttonColorGenerator.Draw();
+        mainHue = Random.Range(0f, 1f);
+
+        buttons.Shuffle();
+        for (int i = 0; i < 15; ++i)
+        {
+            float hue = (mainHue + hueOffsets[buttons[i].hueOffsetIndex]) % 1f;
+            var color = Color.HSVToRGB(hue, 1f, 1f);
+            arduinoCommunication.SetButtonColor(i, color);
+        }
+
         if (buttonCount <= 0)
         {
             buttonCount = minCounter;
@@ -158,9 +192,10 @@ public class GameManager : MonoBehaviour
         counter = buttonCount;
         spaceCounter = 0;
         timer = challengeDuration;
-        pressedButtons.Clear();
 
-        backgroundImage.material.SetColor("_Color", buttonColors[buttonColor]);
+        float firstHue = (mainHue + hueOffsets[0]) % 1f;
+        var firstColor = Color.HSVToRGB(firstHue, 1f, 1f);
+        backgroundImage.material.SetColor("_Color", firstColor);
         SetAngle(1.0f);
         webcamImage.enabled = false;
         counterText.enabled = true;
