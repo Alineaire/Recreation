@@ -50,7 +50,7 @@ Shader "2DAvoid/Obstacle"
 }
 /*ASEBEGIN
 Version=15301
-2567;29;1906;1004;1018.493;467.5133;1.3;True;True
+2567;29;1906;1004;2090.995;259.5133;1.3;True;True
 Node;AmplifyShaderEditor.RangedFloatNode;15;-1906.394,487.9866;Float;False;Property;_MotionSpeed;MotionSpeed;4;0;Create;True;0;0;False;0;1;0;0;0;0;1;FLOAT;0
 Node;AmplifyShaderEditor.WorldPosInputsNode;3;-1643.7,262.5001;Float;False;0;4;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3
 Node;AmplifyShaderEditor.SimpleTimeNode;14;-1656.793,459.3867;Float;False;1;0;FLOAT;1;False;1;FLOAT;0
@@ -81,4 +81,4 @@ WireConnection;16;1;17;0
 WireConnection;0;0;1;0
 WireConnection;0;2;16;0
 ASEEND*/
-//CHKSM=A843921A5268ECAF839BAB329FD8098B784D77E3
+//CHKSM=7F570F9D70EAA1073D8B681BE6F20BD69A353260
