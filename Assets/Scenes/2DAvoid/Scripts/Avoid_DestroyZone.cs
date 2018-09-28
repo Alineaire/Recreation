@@ -11,4 +11,10 @@ public class Avoid_DestroyZone : MonoBehaviour {
             other.GetComponent<Avoid_DestroyableObstacle>().DoDestroy();
         }
     }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireCube(transform.position, transform.localScale);
+    }
 }

@@ -20,8 +20,8 @@ Material:
     m_TexEnvs: []
     m_Floats:
     - _GlowFactor: 1
-    - _LineHeight: 0.1
-    - _LineNumber: 1
+    - _LineHeight: 0.64
+    - _LineNumber: 2
     - _MotionSpeed: 1
     - __dirty: 0
     m_Colors:

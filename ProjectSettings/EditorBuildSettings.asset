@@ -11,4 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/FirstRecreationGame/Scene.unity
     guid: 7c9588061ffb2604ba5f28a28d3f3ce1
+  - enabled: 1
+    path: Assets/Scenes/2DAvoid/2DAvoid.unity
+    guid: f14b3de28dbf24341bb33bcf43f3872d
   m_configObjects: {}

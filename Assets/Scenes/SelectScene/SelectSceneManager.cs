@@ -4,11 +4,38 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
+[System.Serializable]
+public class RecreationScene
+{
+    public string sceneToLoad;
+    public string title;
+    public GameObject visualizerPrefab;
+    public AudioSource clipToPlayOnSelected;
+}
+
 public class SelectSceneManager : MonoBehaviour {
 
     public Text titleText;
-    public ScriptableSceneObject[] playbleScenes;
+    public RecreationScene[] playbleScenes;
+    public GameObject globalCommandManagerPrefab;
     int nextScene = 0;
+
+    GlobalCommandManager globalCommandManager;
+
+    private void Awake()
+    {
+        // singleton
+        if(globalCommandManager == null)
+        {
+            GlobalCommandManager tempG = GameObject.FindObjectOfType<GlobalCommandManager>();
+
+            if (tempG == null)
+            {
+                GameObject g = Instantiate(globalCommandManagerPrefab) as GameObject;
+                globalCommandManager = g.GetComponent<GlobalCommandManager>();
+            }
+        }
+    }
 
     private void Start()
     {

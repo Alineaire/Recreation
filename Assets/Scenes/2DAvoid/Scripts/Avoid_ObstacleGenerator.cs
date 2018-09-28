@@ -27,4 +27,14 @@ public class Avoid_ObstacleGenerator : MonoBehaviour {
 
         cpt = delayToRespawn;
     }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.blue;
+        Vector3 from = transform.position;
+        Vector3 to = transform.position;
+        from.x += minXRespawn;
+        to.x += maxXRespawn;
+        Gizmos.DrawLine(from, to);
+    }
 }
