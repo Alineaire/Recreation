@@ -404,6 +404,48 @@ Transform:
   m_Father: {fileID: 791873212}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+--- !u!1001 &1130262733
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4466623523046622, guid: 6845d3f59ee1c224d85faf47385ee533, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 1361.0568
+      objectReference: {fileID: 0}
+    - target: {fileID: 4466623523046622, guid: 6845d3f59ee1c224d85faf47385ee533, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 43.084377
+      objectReference: {fileID: 0}
+    - target: {fileID: 4466623523046622, guid: 6845d3f59ee1c224d85faf47385ee533, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: -11.941461
+      objectReference: {fileID: 0}
+    - target: {fileID: 4466623523046622, guid: 6845d3f59ee1c224d85faf47385ee533, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4466623523046622, guid: 6845d3f59ee1c224d85faf47385ee533, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4466623523046622, guid: 6845d3f59ee1c224d85faf47385ee533, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4466623523046622, guid: 6845d3f59ee1c224d85faf47385ee533, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4466623523046622, guid: 6845d3f59ee1c224d85faf47385ee533, type: 2}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 6845d3f59ee1c224d85faf47385ee533, type: 2}
+  m_IsPrefabAsset: 0
 --- !u!1 &1163619792
 GameObject:
   m_ObjectHideFlags: 0
@@ -552,7 +594,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1641240023}
   - component: {fileID: 1641240022}
+  - component: {fileID: 1641240026}
   - component: {fileID: 1641240024}
+  - component: {fileID: 1641240025}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -571,16 +615,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cf5215404c71704bac9bb5a10ed4580, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 5
+  speed: 1
   size: 0
   rotationX: 0
   rotationY: 0
   rotationZ: 0
+  delayToRespawn: 3
   obstacleMaterial: {fileID: 2100000, guid: ff2254e17ece1c64b8571537abb5dcf0, type: 2}
   lineNumber: 2
   lineHeight: 0.64
   motionSpeed: 1
   lineHueOffset: 0
+  autoMode: 0
   arduinoInputs: 0
   arduinoCommunication: {fileID: 1641240024}
   inputs: 000000000000000000000000000000
@@ -610,6 +656,62 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 9600
   intensity: 255
+--- !u!111 &1641240025
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1641240021}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Animation: {fileID: 7400000, guid: 47f188768f5778a4bb5c4d5e7aa44689, type: 2}
+  m_Animations:
+  - {fileID: 7400000, guid: 47f188768f5778a4bb5c4d5e7aa44689, type: 2}
+  m_WrapMode: 0
+  m_PlayAutomatically: 0
+  m_AnimatePhysics: 0
+  m_CullingType: 0
+--- !u!114 &1641240026
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1641240021}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 206bec077fdc8364490b399136408678, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed:
+    min: 0
+    max: 20
+  size:
+    min: 0
+    max: 2
+  rotationX:
+    min: 0
+    max: 1
+  rotationY:
+    min: 0
+    max: 1
+  rotationZ:
+    min: 0
+    max: 1
+  delayToRespawn:
+    min: 10
+    max: 1
+  lineNumber:
+    min: 0
+    max: 10
+  lineHeight:
+    min: 0
+    max: 1
+  motionSpeed:
+    min: 0
+    max: 5
+  lineHueOffset:
+    min: 0
+    max: 1
 --- !u!1 &1657059526
 GameObject:
   m_ObjectHideFlags: 0
@@ -645,6 +747,7 @@ MonoBehaviour:
   delayToRespawn: 3
   minXRespawn: -10
   maxXRespawn: 10
+  gameManager: {fileID: 1641240022}
 --- !u!4 &1657059528
 Transform:
   m_ObjectHideFlags: 0

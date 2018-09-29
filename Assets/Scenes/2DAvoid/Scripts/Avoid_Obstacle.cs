@@ -24,14 +24,20 @@ public class Avoid_Obstacle : MonoBehaviour {
     {
         speed = gameManager.speed;
 
-        Vector3 objectRotation = transform.rotation.eulerAngles;
+        /*Vector3 objectRotation = transform.rotation.eulerAngles;
         objectRotation.x += gameManager.rotationX;
         objectRotation.y += gameManager.rotationY;
         objectRotation.z += gameManager.rotationZ;
         transform.rotation = Quaternion.Lerp(
             transform.rotation,
             Quaternion.Euler(objectRotation),
-            Time.deltaTime);
+            Time.deltaTime);*/
+
+        Vector3 _rot = new Vector3(
+            gameManager.rotationX,
+            gameManager.rotationY,
+            gameManager.rotationZ);
+        transform.Rotate(_rot);
 
         transform.localScale = Vector3.Lerp(
             scale,

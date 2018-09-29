@@ -7,11 +7,11 @@ public class Avoid_GameManager : MonoBehaviour {
 
     [Header("Obstacle Behaviour")]
     public float speed = 1f;
-    [Range(0f, 1f)]
     public float size = 1f;
     public float rotationX = 0f;
     public float rotationY = 0f;
     public float rotationZ = 0f;
+    public float delayToRespawn = 3f;
 
     [Header("Obstacle Shader")]
     public Material obstacleMaterial;
@@ -21,15 +21,30 @@ public class Avoid_GameManager : MonoBehaviour {
     public float lineHueOffset = 0f;
 
     [Header("Controls")]
+    public bool autoMode = false;
     public bool arduinoInputs = true;
     public ArduinoCommunication arduinoCommunication;
     public bool[] inputs = new bool[15];
+    int playersDead = 0;
+    Animation _animation;
 
     // arduinoCommunication.IsButtonPressed(i)
     // arduinoCommunication.SetButtonColor(i, color);
 
+    private void Awake()
+    {
+        _animation = GetComponent<Animation>();
+        // AUTOMODE
+        if (autoMode && !_animation.isPlaying)
+        {
+            _animation.Play();
+        }
+    }
+
     private void Update()
     {
+        
+
         // DESIGN EVOLUTIONS WITH VARIABLES
         obstacleMaterial.SetFloat("_LineNumber", lineNumber);
         obstacleMaterial.SetFloat("_LineHeight", lineHeight);
@@ -52,6 +67,8 @@ public class Avoid_GameManager : MonoBehaviour {
         {
             inputs[i] = arduinoCommunication.IsButtonPressed(i);
         }
+
+        
     }
 
     public void TurnOnPlayerLight(int _id, Color _c)
@@ -62,5 +79,21 @@ public class Avoid_GameManager : MonoBehaviour {
     public void TurnOffPlayerLight(int _id)
     {
         arduinoCommunication.SetButtonColor(_id, Color.black);
+    }
+
+    public void PlayerDead()
+    {
+        playersDead++;
+
+        if (autoMode && playersDead >= 6)
+        {
+            StartCoroutine(AutoReloadScene());
+        }
+    }
+
+    IEnumerator AutoReloadScene()
+    {
+        yield return new WaitForSeconds(3f);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }

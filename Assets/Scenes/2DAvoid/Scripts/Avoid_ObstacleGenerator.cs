@@ -7,10 +7,13 @@ public class Avoid_ObstacleGenerator : MonoBehaviour {
     public GameObject[] obstacles;
     public float delayToRespawn;
     public float minXRespawn, maxXRespawn;
+    public Avoid_GameManager gameManager;
     float cpt;
 
     private void Update()
     {
+        delayToRespawn = gameManager.delayToRespawn;
+
         cpt -= Time.deltaTime;
 
         if (cpt > 0f)

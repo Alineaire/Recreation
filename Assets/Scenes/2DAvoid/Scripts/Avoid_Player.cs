@@ -55,6 +55,7 @@ public class Avoid_Player : MonoBehaviour {
 
     public void Die()
     {
+        gameManager.PlayerDead();
         Instantiate(diePrefab, transform.position, Quaternion.identity);
         Destroy(gameObject);
     }

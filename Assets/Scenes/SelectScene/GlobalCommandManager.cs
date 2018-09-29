@@ -5,8 +5,15 @@ using UnityEngine.SceneManagement;
 
 public class GlobalCommandManager : MonoBehaviour {
 
+    public static GlobalCommandManager instance = null;
+
     private void Awake()
     {
+        if (instance == null)
+            instance = this;
+        else if (instance != this)
+            Destroy(gameObject);
+
         DontDestroyOnLoad(this.gameObject);
     }
 
