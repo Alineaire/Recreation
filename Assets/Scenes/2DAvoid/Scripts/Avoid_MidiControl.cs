@@ -31,7 +31,7 @@ public class Avoid_MidiControl : MonoBehaviour {
         gameManager.speed = Mathf.Lerp(
             speed.min,
             speed.max,
-            MidiJack.MidiMaster.GetKnob(01));
+            MidiJack.MidiMaster.GetKnob(01, 00));
 
         gameManager.size = Mathf.Lerp(
             size.min,

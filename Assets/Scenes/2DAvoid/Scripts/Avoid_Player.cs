@@ -13,7 +13,7 @@ public class Avoid_Player : MonoBehaviour {
 
     private int playerID;
     private Avoid_GameManager gameManager;
-    private int left, right;
+    public int left, right;
 
 	void Update () {
         // DEBUG MOTION

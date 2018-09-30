@@ -22,6 +22,7 @@ public class Avoid_GameManager : MonoBehaviour {
 
     [Header("Controls")]
     public bool autoMode = false;
+    public bool autoPlay = false;
     public bool arduinoInputs = true;
     public ArduinoCommunication arduinoCommunication;
     public bool[] inputs = new bool[15];
@@ -35,10 +36,9 @@ public class Avoid_GameManager : MonoBehaviour {
     {
         _animation = GetComponent<Animation>();
         // AUTOMODE
-        if (autoMode && !_animation.isPlaying)
-        {
-            _animation.Play();
-        }
+
+        /*if (autoPlay)
+            _animation.Play();*/
     }
 
     private void Update()
@@ -73,6 +73,7 @@ public class Avoid_GameManager : MonoBehaviour {
 
     public void TurnOnPlayerLight(int _id, Color _c)
     {
+        Debug.Log("Turn on " + _id + " with "+_c.ToString());
         arduinoCommunication.SetButtonColor(_id, _c);
     }
 

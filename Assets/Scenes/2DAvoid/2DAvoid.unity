@@ -458,7 +458,7 @@ GameObject:
   m_Layer: 0
   m_Name: PlayerCreation
   m_TagString: Untagged
-  m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -545,7 +545,7 @@ GameObject:
   m_Layer: 0
   m_Name: ObstacleTrigger
   m_TagString: Untagged
-  m_Icon: {fileID: -964228994112308473, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -600,7 +600,7 @@ GameObject:
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
-  m_Icon: {fileID: 5721338939258241955, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -615,19 +615,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cf5215404c71704bac9bb5a10ed4580, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 1
+  speed: 5
   size: 0
   rotationX: 0
   rotationY: 0
   rotationZ: 0
-  delayToRespawn: 3
+  delayToRespawn: 2
   obstacleMaterial: {fileID: 2100000, guid: ff2254e17ece1c64b8571537abb5dcf0, type: 2}
-  lineNumber: 2
-  lineHeight: 0.64
+  lineNumber: 5
+  lineHeight: 0.5
   motionSpeed: 1
-  lineHueOffset: 0
-  autoMode: 0
-  arduinoInputs: 0
+  lineHueOffset: 0.5
+  autoMode: 1
+  autoPlay: 1
+  arduinoInputs: 1
   arduinoCommunication: {fileID: 1641240024}
   inputs: 000000000000000000000000000000
 --- !u!4 &1641240023
@@ -677,7 +678,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1641240021}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 206bec077fdc8364490b399136408678, type: 3}
   m_Name: 
@@ -724,7 +725,7 @@ GameObject:
   m_Layer: 0
   m_Name: ObstacleGenerator
   m_TagString: Untagged
-  m_Icon: {fileID: 3936346786652291628, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -744,6 +745,10 @@ MonoBehaviour:
   - {fileID: 1622570540797082, guid: f8896f49d8aac3d438c4e11650ac3253, type: 2}
   - {fileID: 1615618563655644, guid: 5dc74d4440cd5b54eb37b9f3239f586a, type: 2}
   - {fileID: 1456512301308984, guid: 5085aab53e2a7554c8e92f441599f50a, type: 2}
+  - {fileID: 1949258821843098, guid: c657db42238d8724b9c48aebc0fb6996, type: 2}
+  - {fileID: 1232909787597944, guid: d3dc9717945bcc1499b97f6ee2240e85, type: 2}
+  - {fileID: 1425247618170786, guid: 20ad8ad75e661f548b871ee444033a50, type: 2}
+  - {fileID: 1745833756464098, guid: a46071c98690008438823e962386371f, type: 2}
   delayToRespawn: 3
   minXRespawn: -10
   maxXRespawn: 10

@@ -28,7 +28,7 @@ public class Avoid_ObstacleGenerator : MonoBehaviour {
             pos,
             Quaternion.identity);
 
-        cpt = delayToRespawn;
+        cpt = gameManager.delayToRespawn;
     }
 
     private void OnDrawGizmos()

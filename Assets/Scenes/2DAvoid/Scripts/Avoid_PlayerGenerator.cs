@@ -34,12 +34,15 @@ public class Avoid_PlayerGenerator : MonoBehaviour {
                 Quaternion.identity);
 
             player.behaviour = g.GetComponent<Avoid_Player>();
-            player.behaviour.SetPlayerID(i, gameManager);
+            // id au cas ou
+            player.behaviour.SetPlayerID(i*2, gameManager);
+            // couleur du gameobject
             player.behaviour.SetPlayerColors(player.backgroundColor, player.edgeColor, player.edgeColor);
-
-            // TODO : definir les inputs
-
-            gameManager.TurnOnPlayerLight(i, player.edgeColor);
+            // inputs arduino
+            player.behaviour.SetPlayerInputs(i*2, i*2+1);
+            // arduino leds colors
+            gameManager.TurnOnPlayerLight(i*2, player.edgeColor);
+            gameManager.TurnOnPlayerLight(i * 2 + 1, player.edgeColor);
 
             i++;
         }
