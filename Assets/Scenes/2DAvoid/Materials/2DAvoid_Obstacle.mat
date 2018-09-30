@@ -20,10 +20,10 @@ Material:
     m_TexEnvs: []
     m_Floats:
     - _GlowFactor: 1
-    - _LineHeight: 0.51968503
-    - _LineNumber: 3.1496062
+    - _LineHeight: 0
+    - _LineNumber: 0
     - _MotionSpeed: 0
     - __dirty: 0
     m_Colors:
-    - _LineColor: {r: 1, g: 0, b: 0.7505212, a: 1}
+    - _LineColor: {r: 0.19651961, g: 1, b: 0, a: 1}
     - _Surfacecolor: {r: 0.1981132, g: 0.1981132, b: 0.1981132, a: 0}

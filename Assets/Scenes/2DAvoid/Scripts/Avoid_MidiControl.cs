@@ -28,54 +28,56 @@ public class Avoid_MidiControl : MonoBehaviour {
 
     void Update ()
     {
+        // GAME KNOBS
         gameManager.speed = Mathf.Lerp(
             speed.min,
             speed.max,
-            MidiJack.MidiMaster.GetKnob(01, 00));
+            MidiJack.MidiMaster.GetKnob(01));
 
         gameManager.size = Mathf.Lerp(
             size.min,
             size.max,
             MidiJack.MidiMaster.GetKnob(02));
 
+        gameManager.delayToRespawn = Mathf.Lerp(
+            delayToRespawn.min,
+            delayToRespawn.max,
+            MidiJack.MidiMaster.GetKnob(03));
+
+        // VISUAL KNOBS
         gameManager.rotationX = Mathf.Lerp(
             rotationX.min,
             rotationX.max,
-            MidiJack.MidiMaster.GetKnob(03));
+            MidiJack.MidiMaster.GetKnob(10));
 
         gameManager.rotationY = Mathf.Lerp(
             rotationY.min,
             rotationY.max,
-            MidiJack.MidiMaster.GetKnob(04));
+            MidiJack.MidiMaster.GetKnob(18));
 
         gameManager.rotationZ = Mathf.Lerp(
             rotationZ.min,
             rotationZ.max,
-            MidiJack.MidiMaster.GetKnob(05));
-
-        gameManager.delayToRespawn = Mathf.Lerp(
-            delayToRespawn.min,
-            delayToRespawn.max,
-            MidiJack.MidiMaster.GetKnob(06));
+            MidiJack.MidiMaster.GetKnob(26));
 
         gameManager.lineNumber = Mathf.Lerp(
             lineNumber.min,
             lineNumber.max,
-            MidiJack.MidiMaster.GetKnob(07));
+            MidiJack.MidiMaster.GetKnob(11));
 
         gameManager.lineHeight = Mathf.Lerp(
             lineHeight.min,
             lineHeight.max,
-            MidiJack.MidiMaster.GetKnob(08));
+            MidiJack.MidiMaster.GetKnob(19));
 
         gameManager.lineHueOffset = Mathf.Lerp(
             lineHueOffset.min,
             lineHueOffset.max,
-            MidiJack.MidiMaster.GetKnob(09));
+            MidiJack.MidiMaster.GetKnob(27));
 
         gameManager.motionSpeed = Mathf.Lerp(
             motionSpeed.min,
             motionSpeed.max,
-            MidiJack.MidiMaster.GetKnob(10));
+            MidiJack.MidiMaster.GetKnob(12));
     }
 }
