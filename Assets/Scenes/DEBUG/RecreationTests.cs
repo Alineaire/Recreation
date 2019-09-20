@@ -11,19 +11,49 @@ public class RecreationTests : MonoBehaviour
     public Color defaultColor = Color.green;
     public Color inputColor = Color.blue;
 
+    public List<BouttonDuCul> boutons;
+
+    private void Start()
+    {
+        boutons = new List<BouttonDuCul>();
+        for(int i=0; i <nbrButtons; i++)
+        {
+            BouttonDuCul b = new BouttonDuCul();
+            b.i = i;
+            arduinoCommunication.SetButtonColor(i, defaultColor);
+            boutons.Add(b);
+        }
+    }
+
     void Update()
     {
         for (int i = 0; i < nbrButtons; ++i)
         {
             if (arduinoCommunication.IsButtonPressed(i))
             {
-                arduinoCommunication.SetButtonColor(i, inputColor);
-                Debug.Log("Input bouton " + i);
+                if(!boutons[i].active)
+                {
+                    arduinoCommunication.SetButtonColor(i, inputColor);
+                    boutons[i].active = true;
+                }
+                
+                //Debug.Log("Input bouton " + i);
             }
             else
             {
-                arduinoCommunication.SetButtonColor(i, defaultColor);
+                if (boutons[i].active)
+                {
+                    arduinoCommunication.SetButtonColor(i, defaultColor);
+                    boutons[i].active = false;
+                }
             }
         }
     }
+}
+
+[System.Serializable]
+public class BouttonDuCul
+{
+    public int i;
+    public bool active = false;
 }

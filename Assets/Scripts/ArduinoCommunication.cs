@@ -24,6 +24,7 @@ public class ArduinoCommunication : MonoBehaviour
 	};
 
 	public int speed = 9600;
+    public string defaultPortName;
 
 	private SerialTransport serialTransport;
 	private CmdMessenger cmdMessenger;
@@ -161,7 +162,11 @@ public class ArduinoCommunication : MonoBehaviour
 
 		if (cmdMessenger == null)
 		{
-			if (portNames.Length > 0)
+            if (!string.IsNullOrEmpty(defaultPortName))
+            {
+                Open(defaultPortName);
+            }
+			else if (portNames.Length > 0)
 			{
 				var portName = portNames[0];
 				Open(portName);
