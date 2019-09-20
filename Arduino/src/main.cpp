@@ -1,8 +1,21 @@
-#include "FastLED.h"
 #include <Arduino.h>
 #include <CmdMessenger.h>
+#include <FastLED.h>
 
-CmdMessenger cmdMessenger{ Serial };
+const uint32_t UartSpeed = 9600;
+
+const int ButtonCount = 15;
+const int LedsPerButton = 17;
+
+constexpr int ButtonPinByButton(int buttonIndex)
+{
+    return 22 + buttonIndex * 2;
+}
+
+constexpr int LedPinByButton(int buttonIndex)
+{
+    return 23 + buttonIndex * 2;
+}
 
 enum Command {
     UnknownCommand,
@@ -11,29 +24,26 @@ enum Command {
     ReadyRequest,
     ReadyResponse,
 
-    ButtonsStateResponse,
-
     SetButtonColorRequest,
     SetButtonColorResponse,
 
     TurnOffRequest,
     TurnOffResponse,
+
+    ButtonsStateUpdated,
 };
 
-const uint32_t UartSpeed = 9600;
-
-const int ButtonCount = 15;
-const int LedsPerButton = 17;
+CmdMessenger cmdMessenger{ Serial };
 CRGB leds[ButtonCount][LedsPerButton];
 
 void OnUnknownCommand()
 {
-    cmdMessenger.sendCmd(Command::UnknownCommand);
+    cmdMessenger.sendCmd(Command::UnknownCommand, cmdMessenger.commandID());
 }
 
 void OnReadyRequest()
 {
-    cmdMessenger.sendCmd(Command::ReadyResponse, "Ready!");
+    cmdMessenger.sendCmd(Command::ReadyResponse);
 }
 
 void OnSetButtonColorRequest()
@@ -43,15 +53,17 @@ void OnSetButtonColorRequest()
     auto g = cmdMessenger.readInt16Arg();
     auto b = cmdMessenger.readInt16Arg();
 
-    if (buttonIndex < 0 || buttonIndex >= ButtonCount
-        || r < 0 || r > 255
-        || g < 0 || g > 255
-        || b < 0 || b > 255) {
-        cmdMessenger.sendCmd(Command::InvalidArgument);
+    if (buttonIndex < 0 || buttonIndex >= ButtonCount || r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255) {
+        cmdMessenger.sendCmdStart(Command::InvalidArgument);
+        cmdMessenger.sendCmdArg(buttonIndex);
+        cmdMessenger.sendCmdArg(r);
+        cmdMessenger.sendCmdArg(g);
+        cmdMessenger.sendCmdArg(b);
+        cmdMessenger.sendCmdEnd();
         return;
     }
 
-    CRGB color{ r, g, b };
+    CRGB color{ (uint8_t)r, (uint8_t)g, (uint8_t)b };
     for (int i = 0; i < LedsPerButton; i++) {
         leds[buttonIndex][i] = color;
     }
@@ -70,6 +82,22 @@ void OnTurnOffRequest()
     cmdMessenger.sendCmd(Command::TurnOffResponse);
 }
 
+template <int buttonIndex = 0>
+void initButtonRecursive();
+
+template <int buttonIndex>
+void initButtonRecursive()
+{
+    pinMode(ButtonPinByButton(buttonIndex), INPUT_PULLUP);
+    FastLED.addLeds<WS2812B, (uint8_t)LedPinByButton(buttonIndex), GRB>(leds[buttonIndex], LedsPerButton);
+    initButtonRecursive<buttonIndex + 1>();
+}
+
+template <>
+void initButtonRecursive<ButtonCount>()
+{
+}
+
 void setup()
 {
     Serial.begin(UartSpeed);
@@ -77,25 +105,7 @@ void setup()
         delay(10);
     }
 
-    for (int buttonIndex = 0; buttonIndex < ButtonCount; buttonIndex++) {
-        pinMode(23 + buttonIndex * 2, INPUT_PULLUP);
-    }
-
-    FastLED.addLeds<WS2812B, 22, GRB>(leds[0], LedsPerButton);
-    FastLED.addLeds<WS2812B, 24, GRB>(leds[1], LedsPerButton);
-    FastLED.addLeds<WS2812B, 26, GRB>(leds[2], LedsPerButton);
-    FastLED.addLeds<WS2812B, 28, GRB>(leds[3], LedsPerButton);
-    FastLED.addLeds<WS2812B, 30, GRB>(leds[4], LedsPerButton);
-    FastLED.addLeds<WS2812B, 32, GRB>(leds[5], LedsPerButton);
-    FastLED.addLeds<WS2812B, 34, GRB>(leds[6], LedsPerButton);
-    FastLED.addLeds<WS2812B, 36, GRB>(leds[7], LedsPerButton);
-    FastLED.addLeds<WS2812B, 38, GRB>(leds[8], LedsPerButton);
-    FastLED.addLeds<WS2812B, 40, GRB>(leds[9], LedsPerButton);
-    FastLED.addLeds<WS2812B, 42, GRB>(leds[10], LedsPerButton);
-    FastLED.addLeds<WS2812B, 44, GRB>(leds[11], LedsPerButton);
-    FastLED.addLeds<WS2812B, 46, GRB>(leds[12], LedsPerButton);
-    FastLED.addLeds<WS2812B, 48, GRB>(leds[13], LedsPerButton);
-    FastLED.addLeds<WS2812B, 50, GRB>(leds[14], LedsPerButton);
+    initButtonRecursive();
 
     cmdMessenger.printLfCr();
     cmdMessenger.attach(OnUnknownCommand);
@@ -104,15 +114,28 @@ void setup()
     cmdMessenger.attach(Command::TurnOffRequest, OnTurnOffRequest);
 }
 
+template <int buttonIndex = 0>
+void addButtonStateRecursive();
+
+template <int buttonIndex>
+void addButtonStateRecursive()
+{
+    auto state = digitalRead(ButtonPinByButton(buttonIndex));
+    cmdMessenger.sendCmdArg(state == LOW);
+    addButtonStateRecursive<buttonIndex + 1>();
+}
+
+template <>
+void addButtonStateRecursive<ButtonCount>()
+{
+}
+
 void loop()
 {
     cmdMessenger.feedinSerialData();
 
-    cmdMessenger.sendCmdStart(Command::ButtonsStateResponse);
-    for (int buttonIndex = 0; buttonIndex < ButtonCount; buttonIndex++) {
-        auto state = digitalRead(23 + buttonIndex * 2);
-        cmdMessenger.sendCmdArg(state == LOW);
-    }
+    cmdMessenger.sendCmdStart(Command::ButtonsStateUpdated);
+    addButtonStateRecursive();
     cmdMessenger.sendCmdEnd();
 
     FastLED.show();

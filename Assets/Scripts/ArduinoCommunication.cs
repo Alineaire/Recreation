@@ -1,171 +1,207 @@
 ﻿using CommandMessenger;
 using CommandMessenger.Transport.Serial;
-using System;
 using System.IO.Ports;
 using System.Linq;
 using UnityEngine;
 
 public class ArduinoCommunication : MonoBehaviour
 {
-    private enum Command
-    {
-        UnknownCommand,
-        InvalidArgument,
+	private enum Command
+	{
+		UnknownCommand,
+		InvalidArgument,
 
-        ReadyRequest,
-        ReadyResponse,
+		ReadyRequest,
+		ReadyResponse,
 
-        ButtonsStateResponse,
+		SetButtonColorRequest,
+		SetButtonColorResponse,
 
-        SetButtonColorRequest,
-        SetButtonColorResponse,
+		TurnOffRequest,
+		TurnOffResponse,
 
-        TurnOffRequest,
-        TurnOffResponse,
-    };
+		ButtonsStateUpdated,
+	};
 
-    public int speed = 9600;
-    public float intensity = 255f;
+	public int speed = 9600;
 
-    private SerialTransport serialTransport;
-    private CmdMessenger cmdMessenger;
+	private SerialTransport serialTransport;
+	private CmdMessenger cmdMessenger;
 
-    private const int ButtonCount = 15;
-    private bool[] buttonStates = new bool[ButtonCount];
+#if UNITY_EDITOR
+	public bool debugNewLines;
+#endif
 
-    void OnUnknownCommand(ReceivedCommand arguments)
-    {
-        Debug.LogWarning("Command without attached callback received.");
-    }
+	public float intensity = 255f;
 
-    void OnInvalidArgument(ReceivedCommand arguments)
-    {
-        var message = arguments.ReadStringArg();
-        Debug.LogWarningFormat("Command with invalid argument received: {0}", message);
-    }
+	private const int ButtonCount = 15;
+	private bool[] buttonStates = new bool[ButtonCount];
 
-    void OnButtonsStateResult(ReceivedCommand arguments)
-    {
-        for (int i = 0; i < ButtonCount; ++i)
-        {
-            buttonStates[i] = arguments.ReadBoolArg();
-        }
-    }
+	private void NewLineReceived(object sender, CommandEventArgs e)
+	{
+		Debug.LogFormat("Received: {0}", e.Command.CommandString());
+	}
 
-    private void NewLineReceived(object sender, CommandEventArgs e)
-    {
-        Console.WriteLine(@"Received > " + e.Command.CommandString());
-    }
+	private void NewLineSent(object sender, CommandEventArgs e)
+	{
+		Debug.LogFormat("Sent: {0}", e.Command.CommandString());
+	}
 
-    private void NewLineSent(object sender, CommandEventArgs e)
-    {
-        Console.WriteLine(@"Sent > " + e.Command.CommandString());
-    }
+	private void OnUnknownCommand(ReceivedCommand command)
+	{
+		Debug.LogWarningFormat("Command without attached callback received: {0}", command.CmdId);
+	}
 
-    private void OnEnable()
-    {
-        serialTransport = new SerialTransport
-        {
-            CurrentSerialSettings = {
-                BaudRate = speed,
-                DtrEnable = false,
+	private void OnInvalidArgument(ReceivedCommand command)
+	{
+		Debug.LogWarningFormat("Command with invalid argument received: {0}", command.RawString);
+	}
 
-            }
-        };
+	private void OnReadyResponse(ReceivedCommand command)
+	{
+		Debug.Log("Arduino is ready.");
+	}
 
-        for (int i = 0; i < ButtonCount; ++i)
-        {
-            buttonStates[i] = false;
-        }
+	private void OnSetButtonColorResponse(ReceivedCommand command)
+	{
+	}
 
-        RefreshConnection();
-    }
+	private void OnTurnOffResponse(ReceivedCommand command)
+	{
+	}
 
-    private void OnDisable()
-    {
-        for (int retry = 0; retry < 10; ++retry)
-        {
-            var command = new SendCommand((int)Command.TurnOffRequest, (int)Command.TurnOffResponse, 5);
-            var result = cmdMessenger.SendCommand(command);
-            if (result.Ok)
-                break;
-        }
+	private void OnButtonsStateUpdated(ReceivedCommand command)
+	{
+		for (int i = 0; i < ButtonCount; ++i)
+		{
+			buttonStates[i] = command.ReadBoolArg();
+		}
+	}
 
-        Close();
-    }
+	private void OnEnable()
+	{
+		serialTransport = new SerialTransport
+		{
+			CurrentSerialSettings = {
+				BaudRate = speed,
+				DtrEnable = false,
 
-    void Close()
-    {
-        cmdMessenger.Disconnect();
-        cmdMessenger.Dispose();
-        cmdMessenger = null;
-    }
+			}
+		};
 
-    void RefreshConnection()
-    {
-        var portNames = SerialPort.GetPortNames();
+		for (int i = 0; i < ButtonCount; ++i)
+		{
+			buttonStates[i] = false;
+		}
 
-        if (cmdMessenger == null)
-        {
-            if (portNames.Length > 0)
-            {
-                var portName = portNames[0];
-                Debug.LogFormat("Opening port {0}.", portName);
+		RefreshConnection();
+	}
 
-                serialTransport.CurrentSerialSettings.PortName = portName;
-                cmdMessenger = new CmdMessenger(serialTransport, BoardType.Bit16);
+	private void OnDisable()
+	{
+		for (int retry = 0; retry < 10; ++retry)
+		{
+			var command = new SendCommand((int)Command.TurnOffRequest, (int)Command.TurnOffResponse, 5);
+			var result = cmdMessenger.SendCommand(command);
+			if (result.Ok)
+				break;
+		}
 
-                cmdMessenger.Attach(OnUnknownCommand);
-                cmdMessenger.Attach((int)Command.UnknownCommand, OnUnknownCommand);
-                cmdMessenger.Attach((int)Command.InvalidArgument, OnInvalidArgument);
-                cmdMessenger.Attach((int)Command.ButtonsStateResponse, OnButtonsStateResult);
+		Close();
+	}
 
-                cmdMessenger.NewLineReceived += NewLineReceived;
-                cmdMessenger.NewLineSent += NewLineSent;
+	private void Close()
+	{
+		cmdMessenger.Disconnect();
+		cmdMessenger.Dispose();
+		cmdMessenger = null;
+	}
 
-                cmdMessenger.Connect();
-            }
-        }
-        else
-        {
-            var count = portNames.Count(name => name == serialTransport.CurrentSerialSettings.PortName);
-            if (count == 0)
-            {
-                Debug.Log("Port unavailable, closing.");
-                Close();
-            }
-        }
-    }
+	public void Open(string portName)
+	{
+		if (cmdMessenger != null)
+		{
+			Close();
+		}
 
-    private void Update()
-    {
-        RefreshConnection();
-    }
+		Debug.LogFormat("Opening port {0}.", portName);
 
-    public bool IsButtonPressed(int index)
-    {
-        return buttonStates[index];
-    }
+		serialTransport.CurrentSerialSettings.PortName = portName;
+		cmdMessenger = new CmdMessenger(serialTransport, BoardType.Bit16);
 
-    public void SetButtonColor(int index, Color color)
-    {
-        if (cmdMessenger == null)
-            return;
+#if UNITY_EDITOR
+		if (debugNewLines)
+		{
+			cmdMessenger.NewLineReceived += NewLineReceived;
+			cmdMessenger.NewLineSent += NewLineSent;
+		}
+#endif
 
-        Int16 r = (Int16)Mathf.RoundToInt(color.r * intensity);
-        Int16 g = (Int16)Mathf.RoundToInt(color.g * intensity);
-        Int16 b = (Int16)Mathf.RoundToInt(color.b * intensity);
+		cmdMessenger.Attach(OnUnknownCommand);
+		cmdMessenger.Attach((int)Command.UnknownCommand, OnUnknownCommand);
+		cmdMessenger.Attach((int)Command.InvalidArgument, OnInvalidArgument);
+		cmdMessenger.Attach((int)Command.ReadyResponse, OnReadyResponse);
+		cmdMessenger.Attach((int)Command.SetButtonColorResponse, OnSetButtonColorResponse);
+		cmdMessenger.Attach((int)Command.TurnOffResponse, OnTurnOffResponse);
+		cmdMessenger.Attach((int)Command.ButtonsStateUpdated, OnButtonsStateUpdated);
 
-        var command = new SendCommand((int)Command.SetButtonColorRequest, (int)Command.SetButtonColorResponse, 5);
-        command.AddArgument((Int16)index);
-        command.AddArgument(r);
-        command.AddArgument(g);
-        command.AddArgument(b);
-        for (int retry = 0; retry < 10; ++retry)
-        {
-            var result = cmdMessenger.SendCommand(command);
-            if (result.Ok)
-                break;
-        }
-    }
+		var success = cmdMessenger.Connect();
+		Debug.Log(success ? "Connection succeeded." : "Connection failed.");
+
+		if (success)
+		{
+			var command = new SendCommand((int)Command.ReadyRequest);
+			cmdMessenger.SendCommand(command);
+		}
+	}
+
+	private void RefreshConnection()
+	{
+		var portNames = SerialPort.GetPortNames();
+
+		if (cmdMessenger == null)
+		{
+			if (portNames.Length > 0)
+			{
+				var portName = portNames[0];
+				Open(portName);
+			}
+		}
+		else
+		{
+			var count = portNames.Count(name => name == serialTransport.CurrentSerialSettings.PortName);
+			if (count == 0)
+			{
+				Debug.Log("Port unavailable, closing.");
+				Close();
+			}
+		}
+	}
+
+	private void Update()
+	{
+		RefreshConnection();
+	}
+
+	public bool IsButtonPressed(int index)
+	{
+		return buttonStates[index];
+	}
+
+	public void SetButtonColor(int index, Color color)
+	{
+		if (cmdMessenger == null)
+			return;
+
+		short r = (short)Mathf.RoundToInt(color.r * intensity);
+		short g = (short)Mathf.RoundToInt(color.g * intensity);
+		short b = (short)Mathf.RoundToInt(color.b * intensity);
+
+		var command = new SendCommand((int)Command.SetButtonColorRequest);
+		command.AddArgument((short)index);
+		command.AddArgument(r);
+		command.AddArgument(g);
+		command.AddArgument(b);
+		cmdMessenger.SendCommand(command);
+	}
 }
