@@ -28,7 +28,7 @@ public class GameManager : MonoBehaviour
     public float gifFrameDuration = 0.5f;
 
     public float[] hueOffsets;
-    private Button[] buttons = new Button[15];
+    private Button[] buttons = new Button[ArduinoCommunication.ButtonCount];
 
     enum State
     {
@@ -57,10 +57,13 @@ public class GameManager : MonoBehaviour
         {
             for (int j = 0; j < 5; ++j)
             {
-                buttons[i * 5 + j] = new Button()
-                {
-                    hueOffsetIndex = i,
-                };
+                var index = i * 5 + j;
+                if (index < ArduinoCommunication.ButtonCount) {
+                    buttons[i * 5 + j] = new Button()
+                    {
+                        hueOffsetIndex = i,
+                    };
+                }
             }
         }
 
@@ -78,7 +81,7 @@ public class GameManager : MonoBehaviour
     int GetButtonCount()
     {
         int sum = 0;
-        for (int i = 0; i < 15; ++i)
+        for (int i = 0; i < ArduinoCommunication.ButtonCount; ++i)
         {
             if (buttons[i].hueOffsetIndex == 0 && arduinoCommunication.IsButtonPressed(i))
             {
@@ -175,7 +178,7 @@ public class GameManager : MonoBehaviour
         mainHue = Random.Range(0f, 1f);
 
         buttons.Shuffle();
-        for (int i = 0; i < 15; ++i)
+        for (int i = 0; i < ArduinoCommunication.ButtonCount; ++i)
         {
             float hue = (mainHue + hueOffsets[buttons[i].hueOffsetIndex]) % 1f;
             var color = Color.HSVToRGB(hue, 1f, 1f);

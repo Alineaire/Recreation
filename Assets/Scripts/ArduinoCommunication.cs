@@ -35,7 +35,7 @@ public class ArduinoCommunication : MonoBehaviour
 
 	public float intensity = 255f;
 
-	private const int ButtonCount = 15;
+	public const int ButtonCount = 13;
 	private bool[] buttonStates = new bool[ButtonCount];
 
 	private void NewLineReceived(object sender, CommandEventArgs e)
