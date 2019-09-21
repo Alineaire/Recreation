@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEngine;
 
 public class MakeScriptableObject {
-
+/*
     [MenuItem("Assets/Create/Recreation/GameScene")]
     public static void CreateGameScene()
     {
@@ -17,4 +17,5 @@ public class MakeScriptableObject {
 
         Selection.activeObject = asset;
     }
+    */
 }
