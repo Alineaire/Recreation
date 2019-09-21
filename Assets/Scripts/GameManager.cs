@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -23,6 +24,7 @@ public class GameManager : MonoBehaviour
     public int maxCounter = 6;
     public float challengeDuration = 60.0f;
     public float messageDuration = 5.0f;
+    public float webcamDelay = 5f;
     public float webcamDuration = 5.0f;
     public float gifDuration = 10.0f;
     public float gifFrameDuration = 0.5f;
@@ -220,6 +222,12 @@ public class GameManager : MonoBehaviour
         counterText.enabled = false;
         victoireText.enabled = true;
 
+        StartCoroutine(DelayTakeSnapshot());
+    }
+
+    IEnumerator DelayTakeSnapshot()
+    {
+        yield return new WaitForSeconds(webcamDelay);
         Sprite webcam = webcamPhotographer.TakeSnapshot();
         webcamImage.sprite = webcam;
         if (webcam)

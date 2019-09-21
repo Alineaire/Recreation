@@ -642,6 +642,7 @@ MonoBehaviour:
   maxCounter: 5
   challengeDuration: 10
   messageDuration: 2.5
+  webcamDelay: 1
   webcamDuration: 5
   gifDuration: 10
   gifFrameDuration: 0.25
